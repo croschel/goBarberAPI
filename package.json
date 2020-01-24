@@ -2,5 +2,16 @@
   "name": "goBarberBackEnd",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "backEnd": "nodemon src/server.js",
+    "backEnd:debug": "nodemon --inspect src/server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2",
+    "sucrase": "^3.12.1"
+  }
 }
