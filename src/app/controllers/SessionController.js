@@ -12,7 +12,7 @@ class SessionController {
       return res.status(401).json({ error: 'User was not found!' });
     }
 
-    if (!(user.checkPassword(password))) {
+    if (!(await user.checkPassword(password))) {
       return res.status(401).json({ error: 'Email or Password wrong' });
     }
 
