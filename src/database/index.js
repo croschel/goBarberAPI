@@ -1,9 +1,11 @@
+/* eslint-disable arrow-parens */
 import Sequelize from 'sequelize';
 import User from '../app/models/User';
+import File from '../app/models/File';
+import Appointment from '../app/models/Appointment';
 import configDatabase from '../config/database';
-import Files from '../app/models/File';
 
-const models = [User, Files];
+const models = [User, File, Appointment];
 
 class Database {
   constructor() {
@@ -14,8 +16,8 @@ class Database {
     this.connection = new Sequelize(configDatabase);
 
     models
-      .map((model) => model.init(this.connection))
-      .map((model) => model.associate && model.associate(this.connection.models));
+      .map(model => model.init(this.connection))
+      .map(model => model.associate && model.associate(this.connection.models));
   }
 }
 
