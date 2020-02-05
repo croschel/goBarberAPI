@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import NotificationSchema from '../schemas/Notification';
 import User from '../models/User';
 
@@ -17,10 +18,19 @@ class NotificationController {
     const notifications = await NotificationSchema.find({
       user: req.userId,
     })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 'desc' })
       .limit(20);
 
     return res.json(notifications);
+  }
+
+  async update(req, res) {
+    const notification = await NotificationSchema.findByIdAndUpdate(
+      req.params.id,
+      { read: true },
+      { new: true }
+    );
+    return res.json(notification);
   }
 }
 
