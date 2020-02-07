@@ -1,5 +1,9 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable object-curly-newline */
 import nodemailer from 'nodemailer';
+import expresshbs from 'express-handlebars';
+import nodemailerhbs from 'nodemailer-express-handlebars';
+import { resolve } from 'path';
 import mailConfig from '../config/mail';
 
 class Mail {
@@ -11,10 +15,28 @@ class Mail {
       secure,
       auth: auth.user ? auth : null,
     });
+    this.configureTemplates();
   }
 
-  sendEmail(message) {
-    this.transporter.sendMail({
+  configureTemplates() {
+    const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails');
+    this.transporter.use(
+      'compile',
+      nodemailerhbs({
+        viewEngine: expresshbs.create({
+          layoutsDir: resolve(viewPath, 'layouts'),
+          partialsDir: resolve(viewPath, 'partials'),
+          defaultLayout: 'default',
+          extname: '.hbs',
+        }),
+        viewPath,
+        extName: '.hbs',
+      })
+    );
+  }
+
+  sendMail(message) {
+    return this.transporter.sendMail({
       ...mailConfig.default,
       ...message,
     });
@@ -22,3 +44,10 @@ class Mail {
 }
 
 export default new Mail();
+
+/**
+ * Amazon SES
+ * Mailgun
+ * Spakpost
+ * Mandril
+ */
