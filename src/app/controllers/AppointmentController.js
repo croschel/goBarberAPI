@@ -6,7 +6,9 @@ import Appointment from '../models/Appointment';
 import User from '../models/User';
 import File from '../models/File';
 import NotificationSchema from '../schemas/Notification';
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import CancellationMail from '../jobs/CancellationMail';
+
 
 class AppointmentController {
   async store(req, res) {
@@ -130,17 +132,10 @@ class AppointmentController {
 
     // Send Email to provider to inform the cancel
     // let's use templates engines = html that can receive node variables
-    await Mail.sendMail({
-      to: `${appointment.provider.name} <${appointment.provider.email}>`,
-      subject: 'Agendamento cancelado',
-      template: 'cancellation',
-      context: {
-        provider: appointment.provider.name,
-        user: appointment.user.name,
-        date: format(appointment.date, "'dia' dd 'de' MMMM', às' H:mm", {
-          locale: pt,
-        }),
-      },
+    // for more performance we're gonna use Bee.Queue to create a queue
+
+    await Queue.add(CancellationMail.key, {
+      appointment,
     });
 
     return res.json(appointment);
