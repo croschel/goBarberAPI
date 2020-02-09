@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 import Bee from 'bee-queue';
 import CancellationMail from '../app/jobs/CancellationMail';
 import redisConfig from '../config/redis';
@@ -28,14 +29,15 @@ class Queue {
     return this.queues[queue].bee.createJob(job).save();
   }
 
-  // Now we have to proccess the job inside the queue
-  proccessQueue() {
-    jobs.forEach((job) => {
+  // Now we have to process the job inside the queue
+  processQueue() {
+    jobs.forEach(job => {
       const { bee, handle } = this.queues[job.key];
       bee.on('failed', this.handleFailure).process(handle);
     });
   }
 
+  // handle with some error that could happen inside the job
   handleFailure(job, err) {
     console.log(`Queue ${job.queue.name}: FAILED`, err);
   }
