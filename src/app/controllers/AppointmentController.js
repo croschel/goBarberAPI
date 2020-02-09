@@ -9,7 +9,6 @@ import NotificationSchema from '../schemas/Notification';
 import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
 
-
 class AppointmentController {
   async store(req, res) {
     const schema = Yup.object().shape({
@@ -23,7 +22,9 @@ class AppointmentController {
     const { provider_id, date } = req.body;
 
     if (provider_id === req.userId) {
-      return res.status(401).json({ error: 'You can not make an appointment for yourself' });
+      return res
+        .status(401)
+        .json({ error: 'You can not make an appointment for yourself' });
     }
 
     const isProvider = await User.findOne({
@@ -82,7 +83,7 @@ class AppointmentController {
         canceled_at: null,
       },
       order: ['date'],
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'past', 'cancelable'],
       limit: 20,
       offset: (page - 1) * 20,
       include: [
